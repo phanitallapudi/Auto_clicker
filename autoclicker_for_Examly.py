@@ -31,6 +31,41 @@ passw_var=tk.StringVar()
 
 def Close():
     root.destroy()
+def dest_for_mouse():
+    def Close():
+        root.destroy()
+    root = Tk()
+    root.geometry("1280x540")
+
+    text = Label(text="To start the script press ready and then the countdown for 3 seconds start for the destination of the first click, however the mouse pointer over there!!!")
+    text.place(x=70,y=90)
+    exit_button = Button(root, text="Ready", command=Close)
+    exit_button.pack(padx=60,pady=20)
+        
+    root.mainloop()
+    time.sleep(5)
+    a,b = pyautogui.position()
+        #####################################
+
+    print("Phase 1 done!!!")
+    return a, b
+
+def next_dest_for_mouse():
+    root = Tk()
+    root.geometry("1280x540")
+    def Close():
+        root.destroy()
+
+    text = Label(text="Now we need to take input for the mouse pointer to comeback, press ready to start and counter will be for 5 seconds")
+    text.place(x=70,y=90)
+    exit_button = Button(root, text="Ready", command=Close)
+    exit_button.pack(padx=60,pady=20)
+        
+    root.mainloop()
+    time.sleep(5)
+
+    end_x,end_y = pyautogui.position()
+    return (end_x, end_y)
 
 def submit():
     
@@ -46,9 +81,34 @@ def submit():
     root.destroy()
     
     if password == 'no' or password == 'NO' or password == 'No':
-        print("passed")
+        dest_x, dest_y = dest_for_mouse()
+        print(dest_x, dest_y)
+        ndest_x, ndest_y = next_dest_for_mouse()
+        print(ndest_x, ndest_y)
+
+        status = True
+        while status:
+            def is_clicked(x, y, button, pressed):
+                
+                if pressed:
+
+                    time.sleep(1)
+                    pyautogui.click(dest_x,dest_y)
+                    time.sleep(1)
+                    pyautogui.click(ndest_x,ndest_y)
+
+            with Listener(on_click=is_clicked) as listener:
+                listener.join()
     else:
-        pass
+        def is_clicked(x, y, button, pressed):
+            if pressed:
+                    time.sleep(1)
+                    pyautogui.click(1450,1010)
+                    time.sleep(1)
+                    pyautogui.click(780,330)
+
+        with Listener(on_click=is_clicked) as listener:
+            listener.join()
 
 name_label = tk.Label(root, text = 'press yes for examly settings and no for custom', font=('calibre',10, 'bold'))
     
@@ -67,45 +127,9 @@ root.mainloop()
 
 
 
-root = Tk()
-root.geometry("1280x540")
-
-text = Label(text="To start the script press ready and then the countdown for 3 seconds start for the destination of the first click, however the mouse pointer over there!!!")
-text.place(x=70,y=90)
-exit_button = Button(root, text="Ready", command=Close)
-exit_button.pack(padx=60,pady=20)
-    
-root.mainloop()
-time.sleep(5)
-dest_x,dest_y = pyautogui.position()
-    #####################################
-
-print(dest_x,dest_y)
-print("Phase 1 done!!!")
-    #####################################
-root = Tk()
-root.geometry("1280x540")
-def Close():
-    root.destroy()
-
-text = Label(text="Now we need to take input for the mouse pointer to comeback, press ready to start and counter will be for 5 seconds")
-text.place(x=70,y=90)
-exit_button = Button(root, text="Ready", command=Close)
-exit_button.pack(padx=60,pady=20)
-    
-root.mainloop()
-time.sleep(5)
-
-end_x,end_y = pyautogui.position()
-print(end_x, end_y)
 
 
-def is_clicked(x, y, button, pressed):
-    if pressed:
-        print("clicked!!")
-        print(button)
-        return False 
 
-with Listener(on_click=is_clicked) as listener:
-    listener.join()
+
+
 
