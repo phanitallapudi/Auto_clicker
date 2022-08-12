@@ -11,12 +11,19 @@ try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
     x = 'pyautogui'
     y = 'pynput'
+    z = 'pywin32'
 
-    if x in sys.modules and y in sys.modules:
+    if x in sys.modules and y in sys.modules and z in sys.modules:
         pass
     else:
-        install(x)
-        install(y)
+        if x not in sys.modules:
+            install(x)
+        elif y not in sys.modules:
+            install(y)
+        elif z not in sys.modules:
+            install(z)
+        else:
+            pass
 except:
     print("no internet.")
 
