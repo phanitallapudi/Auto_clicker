@@ -1,43 +1,41 @@
+#pip install pyautogui
+#pip install pywin32
+#pip install tkinter
 
-from pynput.mouse import Listener
-from tkinter import *
+
+from tkinter import *                                                               #modules required to run the script 
 import subprocess
 import sys
-import pyautogui
 import time
 
-try:
-    def install(package):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-    x = 'pyautogui'
-    y = 'pynput'
-    z = 'pywin32'
 
-    if x in sys.modules and y in sys.modules and z in sys.modules:
-        pass
-    else:
-        if x not in sys.modules:
-            install(x)
-        elif y not in sys.modules:
-            install(y)
-        elif z not in sys.modules:
-            install(z)
-        else:
-            pass
+try:
+    loop_for_packages = True
+    while loop_for_packages:                                                                                #this script is almost automated, every module required will be download if not present in the host system
+        def install(package):
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])    #This function uses subprocess package to install the modules if not found
+        x = 'pyautogui'
+        y = 'pynput'                                                                    #except these 3 package, every other used package in this script are preloaded with python
+        z = 'pywin32'
+
+        if x in sys.modules and y in sys.modules and z in sys.modules:                  #if 'pyautogui', 'pynput' and 'pywin32' are pre-installed, then this if-else statement will be ignored
+            loop_for_packages = False                                                                
+        else:                                                                           #if the above 3 mentioned modules are not present, then it will install those modules using the install function mentioned above. Note: Requires internet conncetion for the first time.
+            if x not in sys.modules:
+                install(x)
+            elif y not in sys.modules:
+                install(y)
+            elif z not in sys.modules:
+                install(z)
+            else:
+                pass
 except:
     print("no internet.")
 
+                                                                                    #exception handling done for no internet connection.
+import win32api
+import pyautogui
 
-    
-import tkinter as tk
-
-root=tk.Tk()
-root.geometry("600x400") 
-name_var=tk.StringVar()
-passw_var=tk.StringVar()
-
-def Close():
-    root.destroy()
 def dest_for_mouse():
     def Close():
         root.destroy()
@@ -87,35 +85,33 @@ def submit():
     passw_var.set("")
     root.destroy()
     
-    if password == 'no' or password == 'NO' or password == 'No':
-        dest_x, dest_y = dest_for_mouse()
+    if password == 'no' or password == 'NO' or password == 'No':                    #here after selecting 'no' in the first Tkinter UI, you will be asked to hover the mouse pointer to get the destionation of the mouse to where you need to click.
+        dest_x, dest_y = dest_for_mouse()                                           #the function named 'dest_for_mouse()' will be the one for the first mouse pointer destination
+        ndest_x, ndest_y = next_dest_for_mouse()                                    #the function named 'next_dest_for_mouse()' will be used for the second destionation of the mouse pointer to end up.
         print(dest_x, dest_y)
-        ndest_x, ndest_y = next_dest_for_mouse()
         print(ndest_x, ndest_y)
 
-        status = True
-        while status:
-            def is_clicked(x, y, button, pressed):
-                
-                if pressed:
+        print("Test passed")
+        m = True
+        while m:
+            left_click = win32api.GetKeyState(0x01)
+            esc_click = win32api.GetKeyState(0x1B)
 
-                    time.sleep(1)
-                    pyautogui.click(dest_x,dest_y)
-                    time.sleep(1)
-                    pyautogui.click(ndest_x,ndest_y)
-
-            with Listener(on_click=is_clicked) as listener:
-                listener.join()
+            if left_click < 0:
+                print("Left click")
+            time.sleep(0.1)
+            if esc_click < 0:
+                print("Exiting the code")
+                m = False
     else:
-        def is_clicked(x, y, button, pressed):
-            if pressed:
-                    time.sleep(1)
-                    pyautogui.click(1450,1010)
-                    time.sleep(1)
-                    pyautogui.click(780,330)
+        pass
+#the first user interface will start from here.    
+import tkinter as tk
 
-        with Listener(on_click=is_clicked) as listener:
-            listener.join()
+root = tk.Tk()                                                                        
+root.geometry("600x400") 
+name_var = tk.StringVar()
+passw_var = tk.StringVar()                                                          #Using tkinter we will be asked whether to use preloaded settings i.e., examly or custom settings
 
 name_label = tk.Label(root, text = 'press yes for examly settings and no for custom', font=('calibre',10, 'bold'))
     

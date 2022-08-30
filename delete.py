@@ -1,11 +1,20 @@
-
+import pandas as pd
+'''
+import win32api
 import time
-from pynput.mouse import Listener
+def buttonpress():
+    m = True
+    while m:
+        a = win32api.GetKeyState(0x01)
+        if a < 0:
+            print("Left button pressed")
+            print(a)
+        time.sleep(0.1)
+        b = win32api.GetKeyState(0x1B)
 
+        if b < 0:
+            m = False'''
 
-def is_clicked(x, y, button, pressed):
-    if pressed:
-        return button
+from ...PythonPractiseCodes.test1 import df
 
-with Listener(on_click=is_clicked) as listener:
-    listener.join()
+print(df)
