@@ -1,6 +1,11 @@
 import win32api
 import win32con
+import subprocess
+import sys
 import time
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def press_key(key_code, duration=1):
     win32api.keybd_event(key_code, 0, 0, 0)
@@ -22,4 +27,7 @@ def main():
         press_key(backspace_key)  # Press Backspace
 
 if __name__ == "__main__":
+    module = "pywin32"
+    if module not in sys.modules:
+        install(module)
     main()
