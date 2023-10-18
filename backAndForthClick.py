@@ -1,69 +1,118 @@
-import subprocess
 import sys
+import subprocess
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+modules = ["pywin32", "pyautogui"]
+
+for module in modules:
+    try:
+        __import__(module)
+    except ImportError:
+        install(module)
+
+import tkinter as tk
+import pyautogui
 import time
 import random
-
-# Check if a module is installed
-def is_module_installed(module_name):
-    try:
-        __import__(module_name)
-        return True
-    except ImportError:
-        return False
-
-# Install a package using pip
-def install_package(package_name):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
-
-# Ensure pywin32 is installed
-if not is_module_installed("pywin32"):
-    print("pywin32 is not installed. Installing it now...")
-    install_package("pywin32")
-    print("pywin32 has been successfully installed.")
-
 import win32api
 import win32con
 
-def press_key(key_code, duration=1):
-    win32api.keybd_event(key_code, 0, 0, 0)
-    time.sleep(duration)
-    win32api.keybd_event(key_code, 0, win32con.KEYEVENTF_KEYUP, 0)
+# Initialize global variables to hold destination and next destination
+dest_x, dest_y = 0, 0
+ndest_x, ndest_y = 0, 0
 
-def main():
-    time.sleep(2)
-    print("Press Esc to stop the script.")
+running = True
+
+
+
+def dest_for_mouse():
+    global dest_x, dest_y
+    root = tk.Tk()
+    root.geometry("1280x540")
+    root.title("Destination for Mouse")
     
-    space_key = 0x20  # Space key code
-    backspace_key = 0x08  # Backspace key code
+    def close():
+        root.destroy()
 
-    keys = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'), ord('K'), ord('L'), ord('M'), ord('N'), ord('O'), ord('P'), ord('Q'), ord('R'), ord('S'), ord('T'), ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
+    text = tk.Label(root, text="To start the script, press 'Ready,' and then a countdown for 3 seconds will begin for the first mouse location. Hover the mouse pointer over the destination!")
+    text.place(x=70, y=90)
+    exit_button = tk.Button(root, text="Ready", command=close)
+    exit_button.pack(padx=60, pady=20)
 
-    while True:
-        if win32api.GetAsyncKeyState(win32con.VK_ESCAPE) != 0:
-            print("Stopping the script.")
-            break
+    root.mainloop()
+    time.sleep(3)
+    dest_x, dest_y = pyautogui.position()
+    print("Phase 1 done!!!")
 
-        count = random.randint(1, 6)
-        chosen = []
-        for i in range(count):
-            choice = random.choice(keys)
-            chosen.append(choice)
-        
-        if win32api.GetAsyncKeyState(win32con.VK_ESCAPE) != 0:
-            print("Stopping the script.")
-            break
+def next_dest_for_mouse():
+    global ndest_x, ndest_y
+    root = tk.Tk()
+    root.geometry("1280x540")
+    root.title("Next Destination for Mouse")
 
-        for i in chosen:
-            press_key(i)  
-            time.sleep(1) 
-        for i in range(len(chosen)):     
-            press_key(backspace_key)  
-        
-        if win32api.GetAsyncKeyState(win32con.VK_ESCAPE) != 0:
-            print("Stopping the script.")
-            break
+    def close():
+        root.destroy()
 
-if __name__ == "__main__":
-    main()
+    text = tk.Label(root, text="To determine the 2nd mouse pointer's destination, press 'Ready,' and a countdown of 3 seconds will begin.")
+    text.place(x=70, y=90)
+    exit_button = tk.Button(root, text="Ready", command=close)
+    exit_button.pack(padx=60, pady=20)
 
+    root.mainloop()
+    time.sleep(3)
+    ndest_x, ndest_y = pyautogui.position()
+    print("Phase 1 done!!!")
+
+def check_esc_key():
+    global running
+    while running:
+        if pyautogui.hotkey("esc"):
+            print("Exiting the code")
+            running = False
+
+def submit():
+    global running
+    password = passw_var.get()
+    root.destroy()
     
+    if password.lower() == 'start':
+        dest_for_mouse()
+        next_dest_for_mouse()
+        print("Destination:", dest_x, dest_y)
+        print("Next Destination:", ndest_x, ndest_y)
+        print("Test passed")
+
+
+        while running:
+            c1 = random.randint(dest_x, ndest_x)
+            c2 = random.randint(dest_y, ndest_y)
+            time.sleep(1)
+            pyautogui.moveTo(c1, c2)
+            pyautogui.click()
+            time.sleep(1)
+            c1 = random.randint(dest_x, ndest_x)
+            c2 = random.randint(dest_y, ndest_y)
+            pyautogui.moveTo(c1, c2)
+            pyautogui.click()
+            if win32api.GetAsyncKeyState(win32con.VK_ESCAPE) != 0:
+                print("Stopping the script.")
+                break
+
+
+root = tk.Tk()
+root.geometry("600x400")
+root.title("Mouse Automation")
+
+passw_var = tk.StringVar()
+
+passw_label = tk.Label(root, text='Press "start" to continue:', font=('calibre', 10, 'bold'))
+passw_entry = tk.Entry(root, textvariable=passw_var, font=('calibre', 10, 'normal'))
+sub_btn = tk.Button(root, text='Submit', command=submit)
+
+passw_label.grid(row=1, column=0)
+passw_entry.grid(row=1, column=1)
+sub_btn.grid(row=2, column=1)
+
+root.mainloop()
