@@ -26,15 +26,23 @@ def dest_for_mouse():
         root.destroy()
     global dest_x, dest_y
     root = tk.Tk()
-    root.geometry("1280x540")
-    root.title("Destination for Mouse")  
+    root.geometry("1280x370")
+    root.title("Destination for Mouse")
 
-    text = tk.Label(root, text="To start the script, press 'Ready,' and then a countdown for 3 seconds will begin for the first mouse location. Hover the mouse pointer over the destination!")
-    text.place(x=70, y=90)
-    exit_button = tk.Button(root, text="Ready", command=close)
-    exit_button.pack(padx=60, pady=20)
+    frame = tk.Frame(root, padx=20, pady=20)
+    frame.pack(padx=20, pady=20)
+
+    text = tk.Label(frame, text="Welcome to the Mouse Destination Script", font=('calibri', 14, 'bold'))
+    text.pack(pady=(0, 20))
+
+    instructions = tk.Label(frame, text="To start the script, press 'Ready,' and then a countdown for 3 seconds will begin for the first mouse location.\nHover the mouse pointer over the destination!", font=('calibri', 12))
+    instructions.pack()
+
+    exit_button = tk.Button(frame, text="Ready", command=close, font=('calibri', 12, 'bold'))
+    exit_button.pack(pady=20)
 
     root.mainloop()
+
     time.sleep(3)
     print("Phase 1 done!!!")
     return pyautogui.position()
@@ -44,13 +52,16 @@ def next_dest_for_mouse():
         root.destroy()
     global ndest_x, ndest_y
     root = tk.Tk()
-    root.geometry("1280x540")
+    root.geometry("640x270")
     root.title("Next Destination for Mouse")
 
-    text = tk.Label(root, text="To determine the 2nd mouse pointer's destination, press 'Ready,' and a countdown of 3 seconds will begin.")
-    text.place(x=70, y=90)
-    exit_button = tk.Button(root, text="Ready", command=close)
-    exit_button.pack(padx=60, pady=20)
+    frame = tk.Frame(root, padx=20, pady=20)
+    frame.pack(padx=20, pady=20)
+
+    instructions = tk.Label(frame, text="To determine the 2nd mouse pointer's destination,\npress 'Ready,' and a countdown of 3 seconds will begin.", font=('calibri', 12))
+    instructions.pack()
+    exit_button = tk.Button(frame, text="Ready", command=close, font=('calibri', 12, 'bold'))
+    exit_button.pack(pady=20)
 
     root.mainloop()
     time.sleep(3)
@@ -85,6 +96,13 @@ def submit():
     keys = [ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'), ord('G'), ord('H'), ord('I'), ord('J'), ord('K'), ord('L'), ord('M'), ord('N'), ord('O'), ord('P'), ord('Q'), ord('R'), ord('S'), ord('T'), ord('U'), ord('V'), ord('W'), ord('X'), ord('Y'), ord('Z')]
 
     while running:
+        
+        c1 = random.randint(dest_x, ndest_x)
+        c2 = random.randint(dest_y, ndest_y)
+        time.sleep(1)
+        pyautogui.moveTo(c1, c2, duration=random.uniform(0.2, 0.5))
+        pyautogui.click()
+        time.sleep(1)
         count = random.randint(1, 6)
         chosen = []
         for i in range(count):
@@ -97,14 +115,9 @@ def submit():
             press_key(backspace_key)  
         c1 = random.randint(dest_x, ndest_x)
         c2 = random.randint(dest_y, ndest_y)
-
-        current_x, current_y = pyautogui.position()
-        distance = ((c1 - current_x) ** 2 + (c2 - current_y) ** 2) ** 0.5
-
-        duration = distance / 2000 
-
-        pyautogui.moveTo(c1, c2, duration=duration)
+        pyautogui.moveTo(c1, c2, duration=random.uniform(0.2, 0.5))
         pyautogui.click()
+
         time.sleep(1)
         scroll_amount = random.randint(-300, 300)  # Adjust the range to control scrolling
         pyautogui.scroll(scroll_amount)
